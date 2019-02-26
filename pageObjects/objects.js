@@ -20,19 +20,16 @@ var momentCommands = {
             this.click('@signUpButton')
         fillCreate(this, fillData.userName, fillData.firstName, fillData.lastName, fillData.password,
             fillData.email, fillData.phone, fillData.createLocation, fillData.gender, fillData.textArea, fillData.photo)
-            this.click('@register')
+        this.click('@register')
+        this.pause(1000)
         this.waitForElementPresent('@loginVarif', 2000)
 
         return this
     },
 
-    hostExperience: function (hostExperience) {
+    hostExperience: function (data) {
         this
-
-        fillHost(this, fillData.hostLocation, fillData.category, fillData.qualifications, fillData.whatDo,
-            fillData.whereBe, fillData.hostTitle, fillData.photo1, fillData.photo2, fillData.hostAddress,
-            fillData.hostCity, fillData.hostState, fillData.hostZip, fillData.hostAddressTitle, fillData.groupSize,
-             fillData.price)
+        fillHost(this, data)
         return this
     },
     userLogin: function (userLogin) {
@@ -40,36 +37,25 @@ var momentCommands = {
         this
         this.assert.elementNotPresent('@loggedinVerif'),
             this.click('@logInButton')
-        fillLogin(this, fillData.userName, fillData.password)
+            .setValue('@userName', 'Jason')
+            .setValue('@password', '12345678')
 
-
-        return this
-    },
-
-    photoInput: function (photo) {
-        //The set up
-        this
-        this.setValue('@photo',
-            require('path').resolve(`Users/Equa1/Desktop/Dev/Moment/images/${photo}`))
-            .pause(2000)
+        this.click('@loginButton')
+        this.assert.elementPresent('@loggedinVerif')
 
         return this
     },
 
     userLogout: function (userLogout) {
-        // The set up
+
         this
-            .waitForElementPresent('@userMenus')
-            .click('@userMenus')
-            .waitForElementPresent('@dropDown')
+        this.waitForElementPresent('@loggedinVerif')
+        .click('@loggedinVerif')
+        .waitForElementPresent('@logoutButton')
+        .click('@logoutButton')
+        .waitForElementNotPresent('@loginGreet')
 
-        //The action
-        this.api.useXpath()
-        this.click('@logout')
-        this.api.useCss()
-
-        //The varification
-        this.waitForElementNotPresent('@userMenus')
+        
         return this
     },
 
@@ -93,19 +79,19 @@ var momentCommands = {
         return this
 
     },
-pickTime: function(time) {
-    this
-    
-        .waitForElementVisible('@startTime')
-        .click('option[value="10:00:00"]')
-        .click('@reviewHost')
-        .waitForElementVisible('@endTime')
-        .click('@endTime')
-        .click('@reviewHost')
-        .waitForElementPresent('.review-pag-wizard')
+    pickTime: function (time) {
+        this
+
+            .waitForElementVisible('@startTime')
+            .click('option[value="10:00:00"]')
+            .click('@reviewHost')
+            .waitForElementVisible('@endTime')
+            .click('@endTime')
+            .click('@reviewHost')
+            .waitForElementPresent('.review-pag-wizard')
         return this
 
-},
+    },
     fillFields: function (field) {
         //Fill fields function for boundary value analysis
         if (field.userName) {
@@ -121,11 +107,12 @@ pickTime: function(time) {
         if (field.lastName) {
             this
                 .setValue('@lastName', field.lastName)
-            if (field.password) {
-                this
-                    .setValue('@createPassword', field.password)
-            }
         }
+        if (field.password) {
+            this
+                .setValue('@password', field.password)
+        }
+
         if (field.email) {
             this
                 .setValue('@email', field.email)
@@ -152,7 +139,7 @@ pickTime: function(time) {
         }
         if (field.photo) {
             this
-                .setValue(field.photo)
+                .setValue('@photo', require('path').resolve(`images/${field.photo}`))
                 .pause(2000)
 
             return this
@@ -277,7 +264,7 @@ module.exports = {
         password: 'input[placeholder="Password"]',
         createLocation: 'input[placeholder="Your location"]',
         phone: 'input[placeholder="Phone number"]',
-        textArea : 'textarea',
+        textArea: 'textarea',
         photo: 'input[type="file"]',
         register: '.register-button',
         groupSize: 'select',
@@ -331,6 +318,7 @@ module.exports = {
         varifReservation: '.thankyou-wrapper',
         bookGroup: 'select',
         reserveEmail: '.input-phone',
+        payEmail: 'input[type="email"]',
 
         //Review
         selectReview: '.mcw-nextbutton',
@@ -341,6 +329,7 @@ module.exports = {
         //XPATH
         // selectorName: {selector: '', locateStrategy: 'xpath'}
         //home screen
+        logoutButton: { selector: '(//button)[1]', locateStrategy: 'xpath' },
         priceButton: {
             selector: '//button[contains(text(), "Price")]',
             locateStrategy: 'xpath'
@@ -424,7 +413,7 @@ module.exports = {
         },
 
         reviewHost: {
-            
+
             selector: '(//button[@class])[2]',
             locateStrategy: 'xpath'
         },

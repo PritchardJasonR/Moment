@@ -29,6 +29,7 @@ module.exports = {
         },
         "desiredCapabilities": {
           "browserName": "chrome",
+          "elementScrollBehavior": 1,
         }
       },
   

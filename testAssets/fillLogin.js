@@ -1,12 +1,11 @@
-module.exports = (client, loginUsername, loginPassword) => {
+var fillData = require('../testAssets/fillData.js')
+module.exports = (client) => {
     client
 
         // fill Login info
-        
-        .setValue('@loginUsername', loginUsername)
-        .setValue('@loginPassword', loginPassword)
-        .click('@loginButton')
-        client.waitForElementPresent('@loginGreet')
-
-
+        fillData.forEach(file => {
+            client.fillFields(file, fillData.userName, fillData.password)
+       
+            client.pause(1000)
+        })
 }
