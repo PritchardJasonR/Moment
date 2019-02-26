@@ -1,5 +1,4 @@
-# Moment
-Moment App 
+# Moment 
 Moment is a platform for people to share theirunique knowledge, passions, and abilities to anyone by hosting experiences. 
 Discover your next adventure!
 
